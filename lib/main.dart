@@ -1,30 +1,47 @@
 import 'package:flutter/material.dart';
-import './questao.dart';
-import './resposta.dart';
+import 'package:projeto_perguntas/questionario.dart';
+import './resultado.dart';
 
 void main(List<String> args) => runApp(PerguntaApp());
 
 class _PerguntaAppState extends State<PerguntaApp> {
   var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
   final _perguntas = const [
     {
       'texto': 'Qual a sua cor favorita?',
-      'respostas': ['Preto', 'Vermelho', 'Verde', 'Branco'],
+      'respostas': [
+        {'texto': 'Preto', 'pontuacao': 10},
+        {'texto': 'Vermelho', 'pontuacao': 5},
+        {'texto': 'Verde', 'pontuacao': 3},
+        {'texto': 'Branco', 'pontuacao': 1},
+      ],
     },
     {
       'texto': 'Qual o seu animal favorito?',
-      'respostas': ['Coelho', 'Cobra', 'Elefante', 'Leão'],
+      'respostas': [
+        {'texto': 'Coelho', 'pontuacao': 10},
+        {'texto': 'Cobra', 'pontuacao': 5},
+        {'texto': 'Elefante', 'pontuacao': 3},
+        {'texto': 'Leão', 'pontuacao': 1},
+      ],
     },
     {
       'texto': 'Qual é o seu instrutor favorito?',
-      'respostas': ['Maria', 'João', 'Leo', 'Pedro'],
+      'respostas': [
+        {'texto': 'Maria', 'pontuacao': 10},
+        {'texto': 'João', 'pontuacao': 5},
+        {'texto': 'Leo', 'pontuacao': 3},
+        {'texto': 'Pedro', 'pontuacao': 1},
+      ],
     },
   ];
 
-  void _responder() {
+  void _responder(int pontuacao) {
     if (temPerguntaSelecionada) {
       setState(() {
         _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
       });
     }
   }
@@ -36,15 +53,12 @@ class _PerguntaAppState extends State<PerguntaApp> {
   void _resetForm() {
     setState(() {
       _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> respostas = temPerguntaSelecionada
-        ? _perguntas[_perguntaSelecionada].cast()['respostas']
-        : [];
-
     return MaterialApp(
         home: Scaffold(
       appBar: AppBar(
@@ -52,25 +66,11 @@ class _PerguntaAppState extends State<PerguntaApp> {
         centerTitle: true,
       ),
       body: temPerguntaSelecionada
-          ? Column(
-              children: <Widget>[
-                Questao(_perguntas[_perguntaSelecionada]['texto'].toString()),
-                ...respostas.map((e) => Resposta(e, _responder)).toList(),
-              ],
-            )
-          : Center(
-              child: Column(children: [
-                Text(
-                  'Parabéns!!',
-                  style: TextStyle(fontSize: 28),
-                ),
-                ElevatedButton(
-                    onPressed: _resetForm,
-                    child: Text("Iniciar Novamente!"),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.blue)),
-              ]),
-            ),
+          ? Questionario(
+              perguntas: _perguntas,
+              perguntaSelecionada: _perguntaSelecionada,
+              responder: _responder)
+          : Resultado(_pontuacaoTotal, _resetForm),
     ));
   }
 }
