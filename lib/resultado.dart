@@ -30,7 +30,7 @@ class Resultado extends StatelessWidget {
         ),
         ElevatedButton(
             onPressed: reset,
-            child: Text("Iniciar Novamente!"),
+            child: Text("Reiniciar Questionário"),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue))
       ],
     );
